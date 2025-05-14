@@ -18,22 +18,22 @@ public class Shooter : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(ShootNext());
+        StartCoroutine(KeepShooting());
     }
 
-    private IEnumerator ShootNext()
+    private IEnumerator KeepShooting()
     {
         while (enabled)
         {
             Vector3 direction = (_target.position - transform.position).normalized;
 
-            SpawnBullet(direction);
+            TakeShot(direction);
 
             yield return _waitForSeconds;
         }
     }
 
-    private void SpawnBullet(Vector3 direction)
+    private void TakeShot(Vector3 direction)
     {
         Vector3 position = transform.position + direction;
 

@@ -4,18 +4,10 @@ public class WaypointMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private Transform _map;
+    [SerializeField, Min(0.001f)] private float _minToInteractionDistance;
 
     private Transform[] _places;
     private int _currentPlaceIndex;
-
-    private void Start()
-    {
-        int placesCount = _map.childCount;
-        _places = new Transform[placesCount];
-
-        for (int index = 0; index < _map.childCount; index++)
-            _places[index] = _map.GetChild(index);
-    }
 
     private void Update()
     {
@@ -25,13 +17,25 @@ public class WaypointMover : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(transform.position, target.position, perStepDistance);
 
-        if (transform.position == target.position)
-            MoveToNextPlace();
+        float toTargetSqrDistance = (target.position - transform.position).sqrMagnitude;
+
+        if (toTargetSqrDistance < _minToInteractionDistance * _minToInteractionDistance)
+            LookAtNextPlace();
     }
 
-    private void MoveToNextPlace()
+    [ContextMenu("Reserve places from map")]
+    private void ReservePlaces()
     {
-        _currentPlaceIndex = (_currentPlaceIndex + 1) % _places.Length;
+        int placesCount = _map.childCount;
+        _places = new Transform[placesCount];
+
+        for (int index = 0; index < placesCount; index++)
+            _places[index] = _map.GetChild(index);
+    }
+
+    private void LookAtNextPlace()
+    {
+        _currentPlaceIndex = ++_currentPlaceIndex % _places.Length;
 
         Vector3 placePosition = _places[_currentPlaceIndex].transform.position;
         Vector3 targetDirection = placePosition - transform.position;
