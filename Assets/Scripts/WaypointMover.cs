@@ -20,11 +20,11 @@ public class WaypointMover : MonoBehaviour
         float toTargetSqrDistance = (target.position - transform.position).sqrMagnitude;
 
         if (toTargetSqrDistance < _minToInteractionDistance * _minToInteractionDistance)
-            LookAtNextPlace();
+            ChangePlace();
     }
 
     [ContextMenu("Reserve places from map")]
-    private void ReservePlaces()
+    private void GetPlaces()
     {
         int placesCount = _map.childCount;
         _places = new Transform[placesCount];
@@ -33,7 +33,7 @@ public class WaypointMover : MonoBehaviour
             _places[index] = _map.GetChild(index);
     }
 
-    private void LookAtNextPlace()
+    private void ChangePlace()
     {
         _currentPlaceIndex = ++_currentPlaceIndex % _places.Length;
 
